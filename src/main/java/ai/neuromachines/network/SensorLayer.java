@@ -3,7 +3,7 @@ package ai.neuromachines.network;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SensorLayer implements Layer{
+public class SensorLayer implements Layer {
     private final float[] input;
 
     @Override

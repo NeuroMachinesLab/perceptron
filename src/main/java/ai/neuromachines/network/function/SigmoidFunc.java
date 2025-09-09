@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 public class SigmoidFunc implements ActivationFunc {
 
-    private final float alpha;
     private final Function<Float, Float> f;
+    private final Function<Float, Float> derivative;
 
 
     public static SigmoidFunc of(float alpha) {
@@ -13,8 +13,13 @@ public class SigmoidFunc implements ActivationFunc {
     }
 
     private SigmoidFunc(float alpha) {
-        this.alpha = alpha;
-        this.f = x -> (float) (1 / (1 + Math.exp(-2 * alpha * x)));
+        double doubleAlpha = 2 * alpha;
+        this.f = x -> (float) (1 / (1 + Math.exp(-doubleAlpha * x)));
+        this.derivative = x -> {
+            float y = f.apply(x);
+            return (float) (doubleAlpha * y * (1 - y));
+        };
+
     }
 
     @Override
@@ -24,9 +29,6 @@ public class SigmoidFunc implements ActivationFunc {
 
     @Override
     public Function<Float, Float> derivative() {
-        return x -> {
-            float y = f.apply(x);
-            return 2 * alpha * y * (1 - y);
-        };
+        return derivative;
     }
 }
