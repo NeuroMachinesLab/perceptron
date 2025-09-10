@@ -1,5 +1,7 @@
 package ai.neuromachines.math;
 
+import ai.neuromachines.Assert;
+
 import java.util.function.Function;
 
 public final class Matrix {
@@ -10,10 +12,7 @@ public final class Matrix {
         float[] result = new float[rows];
         for (int i = 0; i < rows; i++) {
             float[] weightRow = weight[i];
-            if (weightRow.length != cols) {
-                throw new IllegalArgumentException("Weight cols cnt " + weightRow.length +
-                        " is not equals input rows cnt " + cols);
-            }
+            Assert.isTrue(weightRow.length == cols, "Weight cols cnt is not equals input rows cnt");
             float sum = 0;
             for (int j = 0; j < cols; j++) {
                 sum += weightRow[j] * vector[j];
