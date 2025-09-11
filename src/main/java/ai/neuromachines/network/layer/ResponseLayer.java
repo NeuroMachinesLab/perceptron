@@ -16,29 +16,51 @@ public class ResponseLayer implements IntermediateLayer {
     private float[] output;
     private final Backpropagation backpropagation;
 
-    public static ResponseLayer of(int nodeCnt, Layer previous, ActivationFunc func) {
-        return new ResponseLayer(nodeCnt, previous, func);
+    /**
+     * Creates layer with specified connection weights.
+     *
+     * @param weights  weights for connections with nodes of the previous layer
+     *                 (row count equals to current layer node count, cols count equals to previous layer node count)
+     * @param previous previous layer
+     * @param func     activation function
+     */
+    public static ResponseLayer of(float[][] weights, Layer previous, ActivationFunc func) {
+        return new ResponseLayer(weights, previous, func);
     }
 
     /**
+     * Creates layer with random connection weights.
+     *
      * @param nodeCnt  current layer node count
      * @param previous previous layer
+     * @param func     activation function
      */
-    private ResponseLayer(int nodeCnt, Layer previous, ActivationFunc func) {
-        this.previous = previous;
-        this.weight = new float[nodeCnt][previous.nodeCount()];
-        random(weight);
-        this.func = func;
-        this.output = new float[nodeCnt];
-        this.backpropagation = new Backpropagation(nodeCnt);
+    public static ResponseLayer of(int nodeCnt, Layer previous, ActivationFunc func) {
+        float[][] weights = randomWeights(nodeCnt, previous.nodeCount());
+        return new ResponseLayer(weights, previous, func);
     }
 
-    private static void random(float[][] a) {
+    private static float[][] randomWeights(int rows, int cols) {
+        float[][] a = new float[rows][cols];
         for (float[] row : a) {
             for (int j = 0; j < row.length; j++) {
                 row[j] = (float) Math.random();
             }
         }
+        return a;
+    }
+
+    private ResponseLayer(float[][] weights, Layer previous, ActivationFunc func) {
+        Assert.isTrue(weights.length > 0, "At least one node expected");
+        for (float[] row : weights) {
+            Assert.isTrue(row.length == previous.nodeCount(), "Incorrect weights count");
+        }
+        this.previous = previous;
+        this.weight = weights;
+        this.func = func;
+        int nodeCnt = weights.length;
+        this.output = new float[nodeCnt];
+        this.backpropagation = new Backpropagation(nodeCnt);
     }
 
     public int nodeCount() {
@@ -81,7 +103,7 @@ public class ResponseLayer implements IntermediateLayer {
         for (int j = 0, cnt = nodeCount(); j < cnt; j++) {  // current layer
             assert weight[j].length == prevOut.length : "Incorrect previous layer node count";
             for (int i = 0; i < prevOut.length; i++) {  // previous layer
-                float weightDelta = -Constants.trainingVelocity * prevOut[i] * delta[j];
+                float weightDelta = -Constants.TRAINING_VELOCITY * prevOut[i] * delta[j];
                 weight[j][i] += weightDelta;
             }
         }

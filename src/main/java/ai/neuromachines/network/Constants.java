@@ -7,5 +7,5 @@ public interface Constants {
     /**
      * Коэффициент, определяющий скорость изменения весов
      */
-    float trainingVelocity = 0.1f;
+    float TRAINING_VELOCITY = 0.1f;
 }

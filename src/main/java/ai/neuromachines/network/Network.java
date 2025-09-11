@@ -1,27 +1,23 @@
 package ai.neuromachines.network;
 
 import ai.neuromachines.Assert;
+import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.function.ActivationFunc;
-import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.SensorLayer;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@RequiredArgsConstructor(access = PRIVATE)
-public class Network {
-    private final List<Layer> layers;
+public interface Network {
 
     /**
-     * Creates network with many node layers. Each node activation function is set to {@code func} argument.
+     * Creates network with {@code layersNodeCount.length} node layers.
+     * Each node activation function is set to {@code func} argument.
      * Nodes edges weights are set to random values.
      */
-    public static Network of(ActivationFunc func, int... layersNodeCount) {
+    static Network of(ActivationFunc func, int... layersNodeCount) {
         Assert.isTrue(layersNodeCount.length > 1, "Minimum 2 layers expected");
         List<Layer> layers = new ArrayList<>();
         SensorLayer sensorLayer = SensorLayer.of(layersNodeCount[0]);
@@ -31,61 +27,66 @@ public class Network {
             ResponseLayer layer = ResponseLayer.of(nodeCnt, layers.getLast(), func);
             layers.add(layer);
         }
-        return new Network(layers);
+        return new NetworkImpl(layers);
     }
 
     /**
-     * @return current input signal
+     * Creates network with {@code weights.length + 1} node layers.
+     * Each node activation function is set to {@code func} argument.
+     * Nodes edges weights are initialized by {@code weights} argument.
+     *
+     * <p>{@code weights} 0-th element corresponds to weights matrix between 0-th and 1-th node layers.
+     * This matrix row count is equals to node count in 0-th layer, column count is equals to node count in 1-th layer.
+     *
+     * <p>{@code weights} 1-th element corresponds to weights matrix between 1-th and 2-th node layers and so on.
      */
-    public float[] input() {
-        return sensorLayer().output();
+    static Network of(ActivationFunc func, float[][]... weights) {
+        Assert.isTrue(weights.length > 0, "Minimum 2 layers expected");
+        List<Layer> layers = new ArrayList<>();
+        int sensorLayerNodeCount = weights[0].length;
+        SensorLayer sensorLayer = SensorLayer.of(sensorLayerNodeCount);
+        layers.add(sensorLayer);
+        for (float[][] weight :weights) {
+            float[][] transposedWeight = Matrix.transpose(weight);
+            ResponseLayer layer = ResponseLayer.of(transposedWeight, layers.getLast(), func);
+            layers.add(layer);
+        }
+        return new NetworkImpl(layers);
     }
+
+    int layersCount();
 
     /**
-     * Updates input signal
+     * @return sensor layer signals
      */
-    public void input(float[] signal) {
-        sensorLayer().setOutput(signal);
-    }
+    float[] input();
 
     /**
-     * @return current network output signal
+     * Sets sensor layer signals
      */
-    public float[] output() {
-        return outputLayer().output();
-    }
+    void input(float[] signal);
 
     /**
-     * @return current i-th layer's output signal
+     * @return output layer signals
      */
-    public float[] output(int layerIndex) {
-        Assert.isTrue(layerIndex < layers.size(), "Incorrect layer index");
-        return layers.get(layerIndex).output();
-    }
+    float[] output();
 
     /**
-     * @return current layerIndex-th layer's weights
-     * @throws IllegalArgumentException if the index corresponds to
-     *                                  not the intermediate layer {@code index == 0 || index >= size()})
+     * @return output n-th (sensor for 0, hidden or output for last) layer signals
+     * @throws IllegalArgumentException if {@code layerIndex} is < 0 or >= {@link #layersCount()}
      */
-    public float[][] weights(int layerIndex) {
-        Assert.isTrue(layerIndex != 0 && layerIndex < layers.size(), "Incorrect layer index");
-        IntermediateLayer layer = (IntermediateLayer) layers.get(layerIndex);
-        return layer.weights();
-    }
+    float[] output(int layerIndex);
 
     /**
-     * Trains neural network by correcting nodes edges weights
+     * @return weights for connections between i-th and (i-1) layer nodes
+     * (row count equals to i-th layer node count, cols count equals to (i-1) layer node count)
+     * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
+     *                                  the intermediate layer {@code layerIndex <= 0 || layerIndex >=} {@link #layersCount()}
      */
-    public void train(float[] expectedOutput) {
-        outputLayer().correctWeights(expectedOutput);
-    }
+    float[][] weights(int layerIndex);
 
-    private SensorLayer sensorLayer() {
-        return (SensorLayer) layers.getFirst();
-    }
-
-    private ResponseLayer outputLayer() {
-        return (ResponseLayer) layers.getLast();
-    }
+    /**
+     * Trans network for expected output
+     */
+    void train(float[] expectedOutput);
 }
