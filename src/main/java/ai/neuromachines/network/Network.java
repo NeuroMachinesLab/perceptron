@@ -46,7 +46,7 @@ public interface Network {
         int sensorLayerNodeCount = weights[0].length;
         SensorLayer sensorLayer = SensorLayer.of(sensorLayerNodeCount);
         layers.add(sensorLayer);
-        for (float[][] weight :weights) {
+        for (float[][] weight : weights) {
             float[][] transposedWeight = Matrix.transpose(weight);
             ResponseLayer layer = ResponseLayer.of(transposedWeight, layers.getLast(), func);
             layers.add(layer);
@@ -78,12 +78,23 @@ public interface Network {
     float[] output(int layerIndex);
 
     /**
+     * @return weights for connections between i-th and (i+1) layer nodes
+     * (row count equals to i-th layer node count, cols count equals to (i+1) layer node count)
+     * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
+     *                                  the intermediate layer {@code layerIndex < 0 || layerIndex >=(}{@link #layersCount()}{@code - 1)}
+     */
+    float[][] weights(int layerIndex);
+
+    /**
+     * Returns transposed weights matrix. May be convenient for calculations.
+     *
      * @return weights for connections between i-th and (i-1) layer nodes
      * (row count equals to i-th layer node count, cols count equals to (i-1) layer node count)
      * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
-     *                                  the intermediate layer {@code layerIndex <= 0 || layerIndex >=} {@link #layersCount()}
+     *                                  the intermediate layer {@code layerIndex <= 0 || layerIndex >= }{@link #layersCount()}
+     * @implNote For some network implementations (for example {@link NetworkImpl}) is faster than {@link #weights(int)}
      */
-    float[][] weights(int layerIndex);
+    float[][] transposedWeights(int layerIndex);
 
     /**
      * Trans network for expected output

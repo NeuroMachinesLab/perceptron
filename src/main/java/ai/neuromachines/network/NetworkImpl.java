@@ -1,6 +1,7 @@
 package ai.neuromachines.network;
 
 import ai.neuromachines.Assert;
+import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
@@ -44,9 +45,16 @@ public class NetworkImpl implements Network {
 
     @Override
     public float[][] weights(int layerIndex) {
+        float[][] w = transposedWeights(layerIndex + 1);
+        return Matrix.transpose(w);
+    }
+
+    @Override
+    public float[][] transposedWeights(int layerIndex) {
         Assert.isTrue(layerIndex > 0 && layerIndex < layers.size(), "Incorrect layer index");
         IntermediateLayer layer = (IntermediateLayer) layers.get(layerIndex);
         return layer.weights();
+
     }
 
     @Override
