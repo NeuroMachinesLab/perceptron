@@ -8,8 +8,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +21,39 @@ public class NetworkSerializer {
 
     private static final SigmoidFunc SIGMOID = ActivationFunc.sigmoid(1);
 
+    // TODO write activation function
     /**
-     * @return ReadableByteChannel with network parameters
+     * Writes network to specified byte channel
      */
-    public static ReadableByteChannel serialize(Network network) {
-        return NetworkReadableByteChannel.of(network);
+    public static void serialize(Network network, WritableByteChannel out) throws IOException {
+        for (int layer = 0, cnt = network.layersCount() - 1; layer < cnt; layer++) {
+            float[][] weights = network.weights(layer);
+            ByteBuffer buffer = printMatrixToUtf8String(weights);
+            while (buffer.hasRemaining()) {
+                out.write(buffer);
+            }
+        }
+    }
+
+    private static ByteBuffer printMatrixToUtf8String(float[][] weights) {
+        StringBuilder sb = new StringBuilder(weights.length * weights[0].length * 10);
+        for (float[] row : weights) {
+            for (float v : row) {
+                sb.append(v).append(" ");
+            }
+            sb.append("\n");  // end of line
+        }
+        sb.append("\n");  // end of matrix
+        byte[] bytes = sb.toString()
+                .getBytes(UTF_8);
+        return ByteBuffer.wrap(bytes);
     }
 
     /**
-     * Creates new Network with parameters provided by {@code from}
+     * Creates new Network with parameters provided by {@code ch}
      */
-    public static Network deserialize(ReadableByteChannel from) throws IOException {
-        InputStream is = Channels.newInputStream(from);
+    public static Network deserialize(ReadableByteChannel ch) throws IOException {
+        InputStream is = Channels.newInputStream(ch);
         InputStreamReader isr = new InputStreamReader(is, UTF_8);
         BufferedReader br = new BufferedReader(isr);
         List<float[][]> layersWeights = new ArrayList<>();

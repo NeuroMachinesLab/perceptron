@@ -51,8 +51,7 @@ public class Engine {
     private static void saveToFile(Network network,
                                    @SuppressWarnings("SameParameterValue") Path path) throws IOException {
         try (FileChannel ch = FileChannel.open(path, CREATE, WRITE, TRUNCATE_EXISTING)) {
-            ReadableByteChannel networkCh = NetworkSerializer.serialize(network);
-            ch.transferFrom(networkCh, 0, Integer.MAX_VALUE);
+            NetworkSerializer.serialize(network, ch);
         }
         System.out.println("Network has been written to: " + path);
     }
