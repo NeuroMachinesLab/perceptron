@@ -5,6 +5,10 @@ import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.Constants;
 import ai.neuromachines.network.function.ActivationFunc;
 
+/**
+ * Intermediate and Output layers representation.
+ * This layer in comparison with {@link SensorLayer} has input values, weights and activation function.
+ */
 public class ResponseLayer implements IntermediateLayer {
     private final Layer previous;
     // 1-st row contains all weights for 1-st node of current layer to the previous layer
