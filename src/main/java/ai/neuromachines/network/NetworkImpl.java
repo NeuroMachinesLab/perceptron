@@ -4,21 +4,33 @@ import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
-import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.SensorLayer;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.SequencedCollection;
 
-import static lombok.AccessLevel.PACKAGE;
-
-@RequiredArgsConstructor(access = PACKAGE)
 public class NetworkImpl implements Network {
     private final List<Layer> layers;
 
+    NetworkImpl(SequencedCollection<Layer> layers) {
+        Assert.isTrue(layers.size() > 1, "At least 2 layers expected");
+        boolean isOtherLayerIsIntermediate = layers.stream()
+                .skip(1)  // first layer may be SensorLayer or IntermediateLayer
+                .allMatch(layer -> layer instanceof IntermediateLayer);
+        Assert.isTrue(isOtherLayerIsIntermediate, "Second and next layers should be IntermediateLayer");
+        this.layers = List.copyOf(layers);
+    }
+
     @Override
-    public int layersCount() {
-        return layers.size();
+    public List<Layer> layers() {
+        return layers;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<IntermediateLayer> intermediateLayers() {
+        Object intermediateLayers = layers.subList(1, layers().size());
+        return (List<IntermediateLayer>) intermediateLayers;  // checked in constructor
     }
 
     @Override
@@ -51,22 +63,25 @@ public class NetworkImpl implements Network {
 
     @Override
     public float[][] transposedWeights(int layerIndex) {
-        Assert.isTrue(layerIndex > 0 && layerIndex < layers.size(), "Incorrect layer index");
-        IntermediateLayer layer = (IntermediateLayer) layers.get(layerIndex);
-        return layer.weights();
+        Assert.isTrue(layerIndex < layers.size(), "Incorrect layer index");
+        Layer layer = layers.get(layerIndex);
+        Assert.isTrue(layer instanceof IntermediateLayer il, "Layer at given index is not IntermediateLayer");
+        return ((IntermediateLayer) layer).weights();
 
     }
 
     @Override
     public void train(float[] expectedOutput) {
-        outputLayer().correctWeights(expectedOutput);
+        outputLayer().train(expectedOutput);
     }
 
     private SensorLayer sensorLayer() {
-        return (SensorLayer) layers.getFirst();
+        Layer first = layers.getFirst();
+        Assert.isTrue(first instanceof SensorLayer, "First layer is not SensorLayer");
+        return (SensorLayer) first;
     }
 
-    private ResponseLayer outputLayer() {
-        return (ResponseLayer) layers.getLast();
+    private IntermediateLayer outputLayer() {
+        return (IntermediateLayer) layers.getLast();
     }
 }

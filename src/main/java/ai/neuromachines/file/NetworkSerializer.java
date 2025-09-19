@@ -1,8 +1,10 @@
 package ai.neuromachines.file;
 
+import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
 import ai.neuromachines.network.function.SigmoidFunc;
+import ai.neuromachines.network.layer.IntermediateLayer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,8 +28,8 @@ public class NetworkSerializer {
      * Writes network to specified byte channel
      */
     public static void serialize(Network network, WritableByteChannel out) throws IOException {
-        for (int layer = 0, cnt = network.layersCount() - 1; layer < cnt; layer++) {
-            float[][] weights = network.weights(layer);
+        for (IntermediateLayer layer : network.intermediateLayers()) {
+            float[][] weights = Matrix.transpose(layer.weights());
             ByteBuffer buffer = printMatrixToUtf8String(weights);
             while (buffer.hasRemaining()) {
                 out.write(buffer);

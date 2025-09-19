@@ -67,6 +67,10 @@ public class ResponseLayer implements IntermediateLayer {
         this.backpropagation = new Backpropagation(nodeCnt);
     }
 
+    public ActivationFunc activationFunc() {
+        return func;
+    }
+
     public int nodeCount() {
         return output.length;
     }
@@ -83,7 +87,7 @@ public class ResponseLayer implements IntermediateLayer {
     }
 
     @Override
-    public void correctWeights(float[] expectedOutput) {
+    public void train(float[] expectedOutput) {
         Assert.isTrue(expectedOutput.length == nodeCount(), "Incorrect excepted output count");
         if (inputSum == null) {
             throw new IllegalStateException("Call output() first, there is no calculated output signal for weighs correcting");

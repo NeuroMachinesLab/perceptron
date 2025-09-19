@@ -3,14 +3,25 @@ package ai.neuromachines.network;
 import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.function.ActivationFunc;
+import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.SensorLayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SequencedCollection;
 
 public interface Network {
+
+
+    /**
+     * Creates network with specified node layers.
+     * Each node layer may have own activation function.
+     */
+    static Network of(SequencedCollection<Layer> layers) {
+        return new NetworkImpl(layers);
+    }
 
     /**
      * Creates network with {@code layersNodeCount.length} node layers.
@@ -54,7 +65,12 @@ public interface Network {
         return new NetworkImpl(layers);
     }
 
-    int layersCount();
+    List<Layer> layers();
+
+    /**
+     * Same layers as for {@link #layers()} but without first one
+     */
+    List<IntermediateLayer> intermediateLayers();
 
     /**
      * @return sensor layer signals
@@ -73,15 +89,14 @@ public interface Network {
 
     /**
      * @return output n-th (sensor for 0, hidden or output for last) layer signals
-     * @throws IllegalArgumentException if {@code layerIndex} is < 0 or >= {@link #layersCount()}
+     * @throws IllegalArgumentException if {@code layerIndex} is < 0 or >= layers count
      */
     float[] output(int layerIndex);
 
     /**
      * @return weights for connections between i-th and (i+1) layer nodes
      * (row count equals to i-th layer node count, cols count equals to (i+1) layer node count)
-     * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
-     *                                  the intermediate layer {@code layerIndex < 0 || layerIndex >=(}{@link #layersCount()}{@code - 1)}
+     * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      */
     float[][] weights(int layerIndex);
 
@@ -91,7 +106,7 @@ public interface Network {
      * @return weights for connections between i-th and (i-1) layer nodes
      * (row count equals to i-th layer node count, cols count equals to (i-1) layer node count)
      * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
-     *                                  the intermediate layer {@code layerIndex <= 0 || layerIndex >= }{@link #layersCount()}
+     *                                  the {@link IntermediateLayer} or {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      * @implNote For some network implementations (for example {@link NetworkImpl}) is faster than {@link #weights(int)}
      */
     float[][] transposedWeights(int layerIndex);
