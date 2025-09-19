@@ -14,6 +14,7 @@ public class SiLuFunc implements ActivationFunc {
 
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
+    private final float alpha;
 
     public static SiLuFunc of(float alpha) {
         return new SiLuFunc(alpha);
@@ -26,5 +27,11 @@ public class SiLuFunc implements ActivationFunc {
             float y = sigmoid.apply(x);
             return y + x * alpha * y * (1 - y);
         };
+        this.alpha = alpha;
+    }
+
+    @Override
+    public String toString() {
+        return "SiLU(alpha=" + alpha + ")";
     }
 }

@@ -33,8 +33,8 @@ public interface ActivationFunc {
         return SiLuFunc.of(alpha);
     }
 
-    static SoftPlusFunc softplus() {
-        return SoftPlusFunc.of();
+    static SoftplusFunc softplus() {
+        return SoftplusFunc.of();
     }
 
     static TanhFunc tanh() {

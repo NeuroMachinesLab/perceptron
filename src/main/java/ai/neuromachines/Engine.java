@@ -5,8 +5,9 @@ import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -64,8 +65,7 @@ public class Engine {
         for (int i = 1; i < iterations; i++) {
 //            System.out.print("Iteration #");
 //            System.out.println(i + 1);
-//            print("Layer 1 edges weights", network.transposedWeights(1));
-//            print("Layer 2 edges weights", network.transposedWeights(2));
+//            print("Network", network);
 //            print("Outputs", network.output());
             network.train(expectedOutput);
         }
@@ -74,13 +74,12 @@ public class Engine {
         System.out.println("Train time: " + timeSpent);
     }
 
-    private static void printResult(float[] input, float[] expectedOutput, Network network) {
+    private static void printResult(float[] input, float[] expectedOutput, Network network) throws IOException {
         System.out.println("--- Result ---");
         print("Inputs", input);
         print("Expected output", expectedOutput);
         print("Outputs", network.output());
-        print("Layer 0-1 weights", network.weights(0));
-        print("Layer 1-2 weights", network.weights(1));
+        print("Network", network);
     }
 
     private static void print(String message, float[] a) {
@@ -91,15 +90,10 @@ public class Engine {
         System.out.println();
     }
 
-    private static void print(String message, float[][] a) {
+    private static void print(@SuppressWarnings("SameParameterValue") String message,
+                              Network network) throws IOException {
         System.out.println(message + ":");
-        for (float[] innerA : a) {
-            for (float v : innerA) {
-                System.out.print(v);
-                System.out.print("\t");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        WritableByteChannel ch = Channels.newChannel(System.out);
+        NetworkSerializer.serialize(network, ch);
     }
 }

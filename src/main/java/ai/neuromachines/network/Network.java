@@ -78,7 +78,7 @@ public interface Network {
     List<IntermediateLayer> intermediateLayers();
 
     /**
-     * @return sensor layer signals
+     * @return sensor layer input signals
      */
     float[] input();
 
@@ -100,7 +100,7 @@ public interface Network {
 
     /**
      * @return weights for connections between i-th and (i+1) layer nodes
-     * (row count equals to i-th layer node count, cols count equals to (i+1) layer node count)
+     * (matrix row count equals to i-th layer node count, cols count equals to (i+1) layer node count)
      * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      */
     float[][] weights(int layerIndex);
