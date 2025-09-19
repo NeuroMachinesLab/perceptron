@@ -22,6 +22,12 @@ public class NetworkImpl implements Network {
     }
 
     @Override
+    public Layer layer(int i) {
+        Assert.isTrue(i >= 0 && i < layers.size(), "Incorrect layer index");
+        return layers.get(i);
+    }
+
+    @Override
     public List<Layer> layers() {
         return layers;
     }
@@ -51,8 +57,7 @@ public class NetworkImpl implements Network {
 
     @Override
     public float[] output(int layerIndex) {
-        Assert.isTrue(layerIndex < layers.size(), "Incorrect layer index");
-        return layers.get(layerIndex).output();
+        return layer(layerIndex).output();
     }
 
     @Override
@@ -61,10 +66,8 @@ public class NetworkImpl implements Network {
         return Matrix.transpose(w);
     }
 
-    @Override
-    public float[][] transposedWeights(int layerIndex) {
-        Assert.isTrue(layerIndex < layers.size(), "Incorrect layer index");
-        Layer layer = layers.get(layerIndex);
+    private float[][] transposedWeights(int layerIndex) {
+        Layer layer = layer(layerIndex);
         Assert.isTrue(layer instanceof IntermediateLayer il, "Layer at given index is not IntermediateLayer");
         return ((IntermediateLayer) layer).weights();
 

@@ -65,6 +65,11 @@ public interface Network {
         return new NetworkImpl(layers);
     }
 
+    /**
+     * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= layers count}
+     */
+    Layer layer(int i);
+
     List<Layer> layers();
 
     /**
@@ -99,17 +104,6 @@ public interface Network {
      * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      */
     float[][] weights(int layerIndex);
-
-    /**
-     * Returns transposed weights matrix. May be convenient for calculations.
-     *
-     * @return weights for connections between i-th and (i-1) layer nodes
-     * (row count equals to i-th layer node count, cols count equals to (i-1) layer node count)
-     * @throws IllegalArgumentException if the {@code layerIndex} doesn't correspond to
-     *                                  the {@link IntermediateLayer} or {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
-     * @implNote For some network implementations (for example {@link NetworkImpl}) is faster than {@link #weights(int)}
-     */
-    float[][] transposedWeights(int layerIndex);
 
     /**
      * Trans network for expected output
