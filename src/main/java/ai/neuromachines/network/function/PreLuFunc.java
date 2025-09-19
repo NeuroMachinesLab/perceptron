@@ -14,6 +14,7 @@ public class PreLuFunc implements ActivationFunc {
 
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
+    private final float alpha;
 
     public static PreLuFunc of(float alpha) {
         return new PreLuFunc(alpha);
@@ -22,5 +23,11 @@ public class PreLuFunc implements ActivationFunc {
     private PreLuFunc(float alpha) {
         this.function = x -> Math.max(alpha * x, x);
         this.derivative = x -> Float.compare(x, 0.0f) < 0 ? alpha : 1.0f;
+        this.alpha = alpha;
+    }
+
+    @Override
+    public String toString() {
+        return "PReLU(alpha=" + alpha + ")";
     }
 }

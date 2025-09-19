@@ -10,18 +10,23 @@ import java.util.function.Function;
  */
 @Getter
 @Accessors(fluent = true)
-public class SoftPlusFunc implements ActivationFunc {
+public class SoftplusFunc implements ActivationFunc {
 
-    private final static SoftPlusFunc FUNC = new SoftPlusFunc();
+    private final static SoftplusFunc FUNC = new SoftplusFunc();
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
 
-    public static SoftPlusFunc of() {
+    public static SoftplusFunc of() {
         return FUNC;
     }
 
-    private SoftPlusFunc() {
+    private SoftplusFunc() {
         this.function = x -> (float) Math.log(1 + Math.exp(x));
         this.derivative = ActivationFunc.sigmoid(1).function();
+    }
+
+    @Override
+    public String toString() {
+        return "Softplus";
     }
 }
