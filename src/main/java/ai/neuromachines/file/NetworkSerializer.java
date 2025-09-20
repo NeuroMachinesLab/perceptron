@@ -23,6 +23,38 @@ import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Serializes network as nodes activation functions and edges weights in human-readable textual format.
+ * <p>
+ * Format is
+ * <pre>
+ *     {@literal 0: <activation function>}
+ *     {@literal <weights matrix between 0-th and 1-st layers>}
+ *
+ *     {@literal 1: <activation function>}
+ *     {@literal <weights matrix between 1-st and 2-nd layers>}
+ *
+ *     {@literal <...>}
+ *
+ *     {@literal n: <activation function>}
+ * </pre>
+ * where: <br>
+ * {@code 0, 1, ..., n} - layer index; <br>
+ * {@code <activation function>} - i-th layer's activation function, serialized by {@link ActivationFuncSerializer}; <br>
+ * {@code <weights matrix i-th and (i+1) layers>} - is a matrix with rows count equals to i-th layer's node count and
+ * columns count equals to (i+1) layer's node count. For example if i-th layer contains 2 nodes and (i+1) layer contains
+ * 3 nodes when there are 6 edges between those layers and weight matrix is
+ * <pre>
+ *     1.1 1.2 1.3     <---  i-th layer's 1-st node
+ *     2.1 2.2 2.3     <---  i-th layer's 2-nd node
+ *      ^   ^   ^
+ *      |   |   |___________ (i+1) layer's 3-d node
+ *      |   |_______________ (i+1) layer's 2-nd node
+ *      |___________________ (i+1) layer's 1-nd node
+ * </pre>
+ * There is no weights matrix after last (n-th) activation function.
+ * Last layer's weighs accounted by (n-1) layer's weights matrix.
+ */
 public class NetworkSerializer {
 
     private static final String SENSOR_LAYER_ACTIVATION_FUNC_SERIALIZED = "0: Identity(alpha=1.0)";

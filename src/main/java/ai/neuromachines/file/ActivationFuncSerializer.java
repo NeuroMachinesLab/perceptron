@@ -4,6 +4,16 @@ import ai.neuromachines.network.function.ActivationFunc;
 
 import static ai.neuromachines.network.function.ActivationFunc.*;
 
+/**
+ * Serializes activation function as string in one of the format
+ * <pre>
+ *     {@literal <func_name>}
+ * </pre>
+ * or
+ * <pre>
+ *     {@literal <func_name>(<arg_name>=<arg_value>)}
+ * </pre>
+ */
 public class ActivationFuncSerializer {
 
     static String serialize(ActivationFunc func) {
