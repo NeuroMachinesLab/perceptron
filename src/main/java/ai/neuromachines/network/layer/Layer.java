@@ -4,5 +4,7 @@ public interface Layer {
 
     int nodeCount();
 
+    float[] input();
+
     float[] output();
 }

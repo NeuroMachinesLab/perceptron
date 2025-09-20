@@ -27,6 +27,11 @@ public class SensorLayer implements Layer {
     }
 
     @Override
+    public float[] input() {
+        return signal;
+    }
+
+    @Override
     public float[] output() {
         return signal;
     }

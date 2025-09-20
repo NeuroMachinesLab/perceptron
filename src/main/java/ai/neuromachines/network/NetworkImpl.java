@@ -51,6 +51,11 @@ public class NetworkImpl implements Network {
     }
 
     @Override
+    public float[] input(int layerIndex) {
+        return layer(layerIndex).input();
+    }
+
+    @Override
     public float[] output() {
         return layers.getLast().output();
     }
@@ -70,11 +75,5 @@ public class NetworkImpl implements Network {
         return Assert.isInstanceOf(layer(layerIndex), IntermediateLayer.class)
                 .weights();
 
-    }
-
-    @Override
-    public void train(float[] expectedOutput) {
-        Assert.isInstanceOf(layers.getLast(), IntermediateLayer.class)
-                .train(expectedOutput);
     }
 }

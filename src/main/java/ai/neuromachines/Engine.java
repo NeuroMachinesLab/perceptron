@@ -3,6 +3,7 @@ package ai.neuromachines;
 import ai.neuromachines.file.NetworkSerializer;
 import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
+import ai.neuromachines.network.train.TrainStrategy;
 
 import java.io.IOException;
 import java.nio.channels.Channels;
@@ -26,20 +27,19 @@ public class Engine {
 
         Network network = Files.isRegularFile(path) ?
                 openNetworkFromFile(path) :
-                createNetwork(input, expectedOutput);
+                createNetwork(input.length, 4, expectedOutput.length);
 
-        trainNetwork(network, expectedOutput, 100);
+        TrainStrategy trainStrategy = TrainStrategy.backpropagation(network);
+        trainNetwork(network, input, expectedOutput, trainStrategy, 100);
         printResult(input, expectedOutput, network);
 
         saveToFile(network, path);
     }
 
-    private static Network createNetwork(float[] input, float[] expectedOutput) {
+    private static Network createNetwork(int... layersNodeCount) {
         System.out.println("Create network with random weights");
         ActivationFunc func = ActivationFunc.sigmoid(1);
-        Network network = Network.of(func, input.length, 4, expectedOutput.length);
-        network.input(input);
-        return network;
+        return Network.of(func, layersNodeCount);
     }
 
     private static Network openNetworkFromFile(@SuppressWarnings("SameParameterValue") Path path) throws IOException {
@@ -58,16 +58,20 @@ public class Engine {
     }
 
     private static void trainNetwork(Network network,
+                                     float[] input,
                                      float[] expectedOutput,
+                                     TrainStrategy trainStrategy,
                                      @SuppressWarnings("SameParameterValue") int iterations) {
         Instant t0 = Instant.now();
-        network.output();  // calculate first result
+        network.input(input);  // set input signal
+        network.output();      // calculate first output result
         for (int i = 1; i < iterations; i++) {
 //            System.out.print("Iteration #");
 //            System.out.println(i + 1);
 //            print("Network", network);
 //            print("Outputs", network.output());
-            network.train(expectedOutput);
+            trainStrategy.train(expectedOutput);
+            network.output();  // update output with new weights for same input signal (input is not changed)
         }
         Duration timeSpent = Duration.between(t0, Instant.now());
         System.out.println("Train iterations: " + iterations);

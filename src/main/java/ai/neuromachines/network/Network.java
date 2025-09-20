@@ -88,12 +88,18 @@ public interface Network {
     void input(float[] signal);
 
     /**
+     * @return input for n-th (sensor for 0, hidden or output for last) layer
+     * @throws IllegalArgumentException if {@code layerIndex} is < 0 or >= layers count
+     */
+    float[] input(int layerIndex);
+
+    /**
      * @return output layer signals
      */
     float[] output();
 
     /**
-     * @return output n-th (sensor for 0, hidden or output for last) layer signals
+     * @return output for n-th (sensor for 0, hidden or output for last) layer
      * @throws IllegalArgumentException if {@code layerIndex} is < 0 or >= layers count
      */
     float[] output(int layerIndex);
@@ -104,9 +110,4 @@ public interface Network {
      * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      */
     float[][] weights(int layerIndex);
-
-    /**
-     * Trans network for expected output
-     */
-    void train(float[] expectedOutput);
 }
