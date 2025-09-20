@@ -10,13 +10,13 @@ import java.util.function.Function;
  */
 @Getter
 @Accessors(fluent = true)
-public class SoftplusFunc implements ActivationFunc {
+class SoftplusFunc implements ActivationFunc {
 
     private final static SoftplusFunc FUNC = new SoftplusFunc();
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
 
-    public static SoftplusFunc of() {
+    static SoftplusFunc of() {
         return FUNC;
     }
 

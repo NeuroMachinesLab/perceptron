@@ -9,7 +9,7 @@ import ai.neuromachines.network.layer.SensorLayer;
 import java.util.List;
 import java.util.SequencedCollection;
 
-public class NetworkImpl implements Network {
+class NetworkImpl implements Network {
     private final List<Layer> layers;
 
     NetworkImpl(SequencedCollection<Layer> layers) {

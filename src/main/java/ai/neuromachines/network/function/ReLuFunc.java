@@ -10,13 +10,13 @@ import java.util.function.Function;
  */
 @Getter
 @Accessors(fluent = true)
-public class ReLuFunc implements ActivationFunc {
+class ReLuFunc implements ActivationFunc {
 
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
     private final float alpha;
 
-    public static ReLuFunc of(float alpha) {
+    static ReLuFunc of(float alpha) {
         return new ReLuFunc(alpha);
     }
 

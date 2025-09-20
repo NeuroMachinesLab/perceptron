@@ -10,13 +10,13 @@ import java.util.function.Function;
  */
 @Getter
 @Accessors(fluent = true)
-public class TanhFunc implements ActivationFunc {
+class TanhFunc implements ActivationFunc {
 
     private final static TanhFunc FUNC = new TanhFunc();
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
 
-    public static TanhFunc of() {
+    static TanhFunc of() {
         return FUNC;
     }
 

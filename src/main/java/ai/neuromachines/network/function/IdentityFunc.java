@@ -7,13 +7,13 @@ import java.util.function.Function;
 
 @Getter
 @Accessors(fluent = true)
-public class IdentityFunc implements ActivationFunc {
+class IdentityFunc implements ActivationFunc {
 
     private final Function<Float, Float> function;
     private final Function<Float, Float> derivative;
     private final float alpha;
 
-    public static IdentityFunc of(float alpha) {
+    static IdentityFunc of(float alpha) {
         return new IdentityFunc(alpha);
     }
 
