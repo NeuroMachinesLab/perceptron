@@ -6,27 +6,27 @@ import java.util.function.Function;
 
 public final class Matrix {
 
-    public static float[] multiply(float[][] weight, float[] vector) {
-        int rows = weight.length;
+    public static float[] multiply(float[][] matrix, float[] vector) {
+        int rows = matrix.length;
         int cols = vector.length;
         float[] result = new float[rows];
         for (int i = 0; i < rows; i++) {
-            float[] weightRow = weight[i];
-            Assert.isTrue(weightRow.length == cols, "Weight cols cnt is not equals input rows cnt");
+            float[] row = matrix[i];
+            Assert.isTrue(row.length == cols, "Weight cols cnt is not equals input rows cnt");
             float sum = 0;
             for (int j = 0; j < cols; j++) {
-                sum += weightRow[j] * vector[j];
+                sum += row[j] * vector[j];
             }
             result[i] = sum;
         }
         return result;
     }
 
-    public static float[] applyFunc(float[] vector, Function<Float, Float> func) {
-        int cnt = vector.length;
+    public static float[] applyFunc(float[] to, Function<Float, Float> func) {
+        int cnt = to.length;
         float[] result = new float[cnt];
         for (int i = 0; i < cnt; i++) {
-            result[i] = func.apply(vector[i]);
+            result[i] = func.apply(to[i]);
         }
         return result;
     }
