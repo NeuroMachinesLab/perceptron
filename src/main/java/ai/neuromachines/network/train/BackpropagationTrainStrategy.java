@@ -3,7 +3,7 @@ package ai.neuromachines.network.train;
 import ai.neuromachines.Assert;
 import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
-import ai.neuromachines.network.layer.IntermediateLayer;
+import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.Layer;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +21,7 @@ class BackpropagationTrainStrategy implements TrainStrategy {
 
     public static BackpropagationTrainStrategy of(Network network) {
         List<LayerDelta> layerDeltas = new ArrayList<>();
-        for (IntermediateLayer layer : network.intermediateLayers()) {
+        for (ResponseLayer layer : network.responseLayers()) {
             layerDeltas.add(new LayerDelta(layer.nodeCount()));
         }
         return new BackpropagationTrainStrategy(network, layerDeltas);
@@ -30,7 +30,7 @@ class BackpropagationTrainStrategy implements TrainStrategy {
     @Override
     public void train(float[] expectedOutput) {
         int currentIdx = network.layers().size() - 1;
-        IntermediateLayer current = Assert.isInstanceOf(network.layer(currentIdx), IntermediateLayer.class);
+        ResponseLayer current = Assert.isInstanceOf(network.layer(currentIdx), ResponseLayer.class);
         Assert.isTrue(expectedOutput.length == current.nodeCount(), "Incorrect excepted output count");
         Assert.isTrue(current.input() != null, "Call output() first, there is no calculated output signal for weighs correcting");
         float[] updatedDelta = getLayerDelta(currentIdx)
@@ -47,16 +47,13 @@ class BackpropagationTrainStrategy implements TrainStrategy {
     private void updatePreviousLayerWeights(int currentLayerIdx) {
         int previousIdx = currentLayerIdx - 1;
         if (previousIdx > 0) {  // don't update weights for sensor layer (idx == 0)
-            Layer previous = network.layer(previousIdx);
-            if (previous instanceof IntermediateLayer) {
-                correctIntermediateLayerWeights(previousIdx);
-            }
+            correctIntermediateLayerWeights(previousIdx);
         }
     }
 
     private void correctIntermediateLayerWeights(int currentIdx) {
-        IntermediateLayer current = Assert.isInstanceOf(network.layer(currentIdx), IntermediateLayer.class);
-        IntermediateLayer next = Assert.isInstanceOf(network.layer(currentIdx + 1), IntermediateLayer.class);
+        ResponseLayer current = Assert.isInstanceOf(network.layer(currentIdx), ResponseLayer.class);
+        ResponseLayer next = Assert.isInstanceOf(network.layer(currentIdx + 1), ResponseLayer.class);
         LayerDelta nextLayerDeltas = getLayerDelta(currentIdx + 1);
         float[] updatedDelta = getLayerDelta(currentIdx)
                 .updateIntermediateLayerDelta(current.input(), current.activationFunc(), next.weights(), nextLayerDeltas);

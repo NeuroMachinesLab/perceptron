@@ -4,7 +4,6 @@ import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
-import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.SensorLayer;
@@ -35,7 +34,7 @@ public class NetworkSerializer {
         ByteBuffer buffer = printSensorLayerActivationFunc();
         write(buffer, out);
         int layerIndex = 1;
-        for (IntermediateLayer layer : network.intermediateLayers()) {
+        for (ResponseLayer layer : network.responseLayers()) {
             ActivationFunc func = layer.activationFunc();
             float[][] weights = Matrix.transpose(layer.weights());
             buffer = printMatrixToUtf8String(layerIndex++, func, weights);

@@ -1,38 +1,14 @@
 package ai.neuromachines.network.layer;
 
-import ai.neuromachines.Assert;
-import lombok.AllArgsConstructor;
-
-import static lombok.AccessLevel.PRIVATE;
 
 /**
- * Layer with no input signals. Produces only output signal
+ * Layer produces only output signal and doesn't have activation function.
  */
-@AllArgsConstructor(access = PRIVATE)
-public class SensorLayer implements Layer {
-    private float[] signal;
+public interface SensorLayer extends Layer {
 
-    public static SensorLayer of(int nodeCnt) {
-        return new SensorLayer(new float[nodeCnt]);
+    static SensorLayer of(int nodeCnt) {
+        return SensorLayerImpl.of(nodeCnt);
     }
 
-    public void setInput(float[] signal) {
-        Assert.isTrue(signal.length == this.signal.length, "Incorrect array length");
-        this.signal = signal;
-    }
-
-    @Override
-    public int nodeCount() {
-        return signal.length;
-    }
-
-    @Override
-    public float[] input() {
-        return signal;
-    }
-
-    @Override
-    public float[] output() {
-        return signal;
-    }
+    void setInput(float[] signal);
 }

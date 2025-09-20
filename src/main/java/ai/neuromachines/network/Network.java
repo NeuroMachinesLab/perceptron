@@ -3,7 +3,6 @@ package ai.neuromachines.network;
 import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.function.ActivationFunc;
-import ai.neuromachines.network.layer.IntermediateLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.SensorLayer;
@@ -75,7 +74,7 @@ public interface Network {
     /**
      * Same layers as for {@link #layers()} but without first one
      */
-    List<IntermediateLayer> intermediateLayers();
+    List<ResponseLayer> responseLayers();
 
     /**
      * @return sensor layer input signals

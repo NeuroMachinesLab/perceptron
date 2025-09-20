@@ -2,7 +2,7 @@ package ai.neuromachines.network;
 
 import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
-import ai.neuromachines.network.layer.IntermediateLayer;
+import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.SensorLayer;
 
@@ -14,10 +14,10 @@ class NetworkImpl implements Network {
 
     NetworkImpl(SequencedCollection<Layer> layers) {
         Assert.isTrue(layers.size() > 1, "At least 2 layers expected");
-        boolean isOtherLayerIsIntermediate = layers.stream()
-                .skip(1)  // first layer may be SensorLayer or IntermediateLayer
-                .allMatch(layer -> layer instanceof IntermediateLayer);
-        Assert.isTrue(isOtherLayerIsIntermediate, "Second and next layers should be IntermediateLayer");
+        boolean isOtherLayersAreResponseLayers = layers.stream()
+                .skip(1)  // first layer may be SensorLayer or ResponseLayer
+                .allMatch(layer -> layer instanceof ResponseLayer);
+        Assert.isTrue(isOtherLayersAreResponseLayers, "Layers except first should be ResponseLayer type");
         this.layers = List.copyOf(layers);
     }
 
@@ -34,9 +34,9 @@ class NetworkImpl implements Network {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<IntermediateLayer> intermediateLayers() {
+    public List<ResponseLayer> responseLayers() {
         Object intermediateLayers = layers.subList(1, layers().size());
-        return (List<IntermediateLayer>) intermediateLayers;  // checked in constructor
+        return (List<ResponseLayer>) intermediateLayers;  // are checked in constructor
     }
 
     @Override
@@ -72,7 +72,7 @@ class NetworkImpl implements Network {
     }
 
     private float[][] transposedWeights(int layerIndex) {
-        return Assert.isInstanceOf(layer(layerIndex), IntermediateLayer.class)
+        return Assert.isInstanceOf(layer(layerIndex), ResponseLayer.class)
                 .weights();
 
     }
