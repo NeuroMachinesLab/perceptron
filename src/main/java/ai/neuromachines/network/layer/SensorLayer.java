@@ -16,7 +16,7 @@ public class SensorLayer implements Layer {
         return new SensorLayer(new float[nodeCnt]);
     }
 
-    public void setOutput(float[] signal) {
+    public void setInput(float[] signal) {
         Assert.isTrue(signal.length == this.signal.length, "Incorrect array length");
         this.signal = signal;
     }

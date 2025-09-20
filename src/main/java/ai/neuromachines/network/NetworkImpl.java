@@ -41,19 +41,19 @@ public class NetworkImpl implements Network {
 
     @Override
     public float[] input() {
-        return sensorLayer().output();
+        return layers.getFirst().input();
     }
 
     @Override
     public void input(float[] signal) {
-        sensorLayer().setOutput(signal);
+        Assert.isInstanceOf(layers.getFirst(), SensorLayer.class)
+                .setInput(signal);
     }
 
     @Override
     public float[] output() {
-        return outputLayer().output();
+        return layers.getLast().output();
     }
-
 
     @Override
     public float[] output(int layerIndex) {
@@ -67,24 +67,14 @@ public class NetworkImpl implements Network {
     }
 
     private float[][] transposedWeights(int layerIndex) {
-        Layer layer = layer(layerIndex);
-        Assert.isTrue(layer instanceof IntermediateLayer il, "Layer at given index is not IntermediateLayer");
-        return ((IntermediateLayer) layer).weights();
+        return Assert.isInstanceOf(layer(layerIndex), IntermediateLayer.class)
+                .weights();
 
     }
 
     @Override
     public void train(float[] expectedOutput) {
-        outputLayer().train(expectedOutput);
-    }
-
-    private SensorLayer sensorLayer() {
-        Layer first = layers.getFirst();
-        Assert.isTrue(first instanceof SensorLayer, "First layer is not SensorLayer");
-        return (SensorLayer) first;
-    }
-
-    private IntermediateLayer outputLayer() {
-        return (IntermediateLayer) layers.getLast();
+        Assert.isInstanceOf(layers.getLast(), IntermediateLayer.class)
+                .train(expectedOutput);
     }
 }
