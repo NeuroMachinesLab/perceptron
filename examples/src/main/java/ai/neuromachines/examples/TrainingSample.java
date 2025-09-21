@@ -1,4 +1,4 @@
-package ai.neuromachines;
+package ai.neuromachines.examples;
 
 import ai.neuromachines.file.NetworkSerializer;
 import ai.neuromachines.network.Network;
@@ -16,7 +16,26 @@ import java.time.Instant;
 
 import static java.nio.file.StandardOpenOption.*;
 
-public class Engine {
+/**
+ * First run creates Perceptron with 3 layers (sensor, hidden and output).
+ * Network weights set to random values. Activation function set to Sigmoid.
+ * <p>
+ * Network input layer consists of 3 nodes. Network input signal set to 0.1, 0.2, 0.3 for each of those nodes.
+ * Network output layer consists of 2 nodes. Expected output values is 0.8 and 0.9.
+ * Network is trained in 100 cycles by Backpropagation algorithm.
+ * Corrected network weights is saved to "network.txt" file.
+ * <p>
+ * Second and other runs read network weights form "network.txt" file.
+ * Network is trained again in 100 cycles.
+ * Corrected network weights rewrites to "network.txt" file.
+ * <p>
+ * "network.txt" file helps to split work to sequential parts. If training is takes a lot of time,
+ * this pattern helps to take the network snapshot at some middle point and continue training late from this snapshot.
+ * <p>
+ * If you need to start network learning from scratch, delete the "network.txt" file.
+ */
+public class TrainingSample {
+
     private static final Path path = Path.of("network.txt");
 
 
@@ -25,7 +44,7 @@ public class Engine {
         float[] input = new float[]{0.1f, 0.2f, 0.3f};
         float[] expectedOutput = new float[]{0.8f, 0.9f};
 
-        Network network = Files.isRegularFile(path) ?
+        Network network = Files.exists(path) ?
                 openNetworkFromFile(path) :
                 createNetwork(input.length, 4, expectedOutput.length);
 

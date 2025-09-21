@@ -12,6 +12,9 @@ import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
+/**
+ * @see <a href="https://en.wikipedia.org/wiki/Backpropagation">Backpropagation</a>
+ */
 @RequiredArgsConstructor(access = PRIVATE)
 class BackpropagationTrainStrategy implements TrainStrategy {
     private final Network network;
@@ -74,7 +77,7 @@ class BackpropagationTrainStrategy implements TrainStrategy {
         for (int j = 0; j < weight.length; j++) {  // current layer
             assert weight[j].length == previousLayerOutput.length : "Incorrect previous layer node count";
             for (int i = 0; i < previousLayerOutput.length; i++) {  // previous layer
-                float weightDelta = -Constants.TRAINING_VELOCITY * previousLayerOutput[i] * delta[j];
+                float weightDelta = -Constants.LEARNING_RATE * previousLayerOutput[i] * delta[j];
                 weight[j][i] += weightDelta;
             }
         }
