@@ -43,6 +43,14 @@
         <lombok.version>1.18.40</lombok.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>NeuroMachinesLab</name>
+            <url>https://maven.pkg.github.com/NeuroMachinesLab/perceptron</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>

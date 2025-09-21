@@ -1,0 +1,28 @@
+name: Publish Jar to GitHub
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '24'
+        distribution: 'liberica'
+
+    - name: Publish to GitHub
+      run: mvn --batch-mode deploy
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
