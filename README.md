@@ -58,3 +58,47 @@ For hidden layer node Delta coefficient evaluated by:
 where: <br>
 `w_jk` - weight between j-th node (located closer to input layer) and k-th node (located closer to output layer); <br>
 `δ_k` - delta coefficient for j-th node.
+
+## How to Use Jar Library
+
+There are 2 cases for get JAR package.
+
+1. Get JAR from GitHub [Packages](https://github.com/orgs/NeuroMachinesLab/packages?repo_name=perceptron).
+In this case you [should](https://stackoverflow.com/questions/72732582/using-github-packages-without-personal-access-token)
+use GitHub Personal Access Token (PAT). Configure maven repository by this GitHub
+[Tutorial](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
+After that you can add package to dependencies
+```xml
+<dependency>
+    <groupId>ai.neuromachines</groupId>
+    <artifactId>perceptron</artifactId>
+    <version>${perceptron.version}</version>
+</dependency>
+```
+
+2. You can get JAR package from [JitPack](https://jitpack.io/#NeuroMachinesLab/perceptron) repository without PAT.
+Add repository to you maven project
+```xml
+<repositories>
+    <repository>
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>https://repo.maven.apache.org/maven2</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+and add dependency
+```xml
+<dependency>
+    <groupId>com.github.NeuroMachinesLab</groupId>
+    <artifactId>perceptron</artifactId>
+    <version>${perceptron.version}</version>
+</dependency>
+```
