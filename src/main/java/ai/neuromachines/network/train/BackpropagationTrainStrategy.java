@@ -3,16 +3,24 @@ package ai.neuromachines.network.train;
 import ai.neuromachines.Assert;
 import ai.neuromachines.network.Network;
 import ai.neuromachines.network.function.ActivationFunc;
-import ai.neuromachines.network.layer.ResponseLayer;
+import ai.neuromachines.network.function.SoftmaxFunc;
 import ai.neuromachines.network.layer.Layer;
+import ai.neuromachines.network.layer.ResponseLayer;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static lombok.AccessLevel.PRIVATE;
 
 /**
+ * Squared error loss function is used with one exception.
+ * <p>
+ * If output layer's activation function is {@link SoftmaxFunc}, then cross-entropy loss function is used.
+ * Check out <a href="https://habr.com/ru/articles/155235">this article</a> for backpropagation method calculation
+ * in this case.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Backpropagation">Backpropagation</a>
  */
 @RequiredArgsConstructor(access = PRIVATE)
@@ -102,10 +110,14 @@ class BackpropagationTrainStrategy implements TrainStrategy {
             assert delta.length == input.length : "Incorrect delta count";
 
             for (int j = 0, cnt = input.length; j < cnt; j++) {  // current layer
-                float error = expectedOutput[j] - output[j];
-                float nodeInputSum = input[j];
-                float activationFuncDerivative = func.derivative().apply(nodeInputSum);
-                delta[j] = -error * activationFuncDerivative;
+                float error = output[j] - expectedOutput[j];
+                if (Objects.equals(func, ActivationFunc.softmax())) {
+                    delta[j] = error;  // Gross-entropy loss delta
+                } else {
+                    float nodeInputSum = input[j];
+                    float activationFuncDerivative = func.derivative().apply(nodeInputSum);
+                    delta[j] = error * activationFuncDerivative;  // Squared error loss delta
+                }
             }
             return delta;
         }

@@ -21,8 +21,9 @@ class ResponseLayerImpl implements ResponseLayer {
         }
         this.previous = previous;
         this.weight = weights;
-        this.func = func;
         int nodeCnt = weights.length;
+        this.inputSum = new float[nodeCnt];
+        this.func = func;
         this.output = new float[nodeCnt];
     }
 

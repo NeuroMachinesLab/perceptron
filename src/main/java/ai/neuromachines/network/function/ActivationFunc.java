@@ -33,6 +33,10 @@ public interface ActivationFunc {
         return SiLuFunc.of(alpha);
     }
 
+    static ActivationFunc softmax() {
+        return SoftmaxFunc.of();
+    }
+
     static ActivationFunc softplus() {
         return SoftplusFunc.of();
     }

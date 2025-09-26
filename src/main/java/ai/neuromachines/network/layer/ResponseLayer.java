@@ -2,6 +2,8 @@ package ai.neuromachines.network.layer;
 
 import ai.neuromachines.network.function.ActivationFunc;
 
+import java.util.Objects;
+
 /**
  * Intermediate and Output layers representation.
  * This layer in comparison with {@link SensorLayer} has input values, weights and activation function.
@@ -17,7 +19,9 @@ public interface ResponseLayer extends Layer {
      * @param func     activation function
      */
     static ResponseLayer of(float[][] weights, Layer previous, ActivationFunc func) {
-        return new ResponseLayerImpl(weights, previous, func);
+        return Objects.equals(func, ActivationFunc.softmax()) ?
+                new SoftmaxLayer(weights, previous) :
+                new ResponseLayerImpl(weights, previous, func);
     }
 
     /**
@@ -29,7 +33,9 @@ public interface ResponseLayer extends Layer {
      */
     static ResponseLayer of(int nodeCnt, Layer previous, ActivationFunc func) {
         float[][] weights = randomWeights(nodeCnt, previous.nodeCount());
-        return new ResponseLayerImpl(weights, previous, func);
+        return Objects.equals(func, ActivationFunc.softmax()) ?
+                new SoftmaxLayer(weights, previous) :
+                new ResponseLayerImpl(weights, previous, func);
     }
 
     private static float[][] randomWeights(int rows, int cols) {
