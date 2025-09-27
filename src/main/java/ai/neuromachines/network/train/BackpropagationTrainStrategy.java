@@ -39,11 +39,12 @@ class BackpropagationTrainStrategy implements TrainStrategy {
     }
 
     @Override
-    public void train(float[] expectedOutput) {
+    public void train(float[] input, float[] expectedOutput) {
+        network.input(input);
+        network.propagate();
         int currentIdx = network.layers().size() - 1;
         ResponseLayer current = Assert.isInstanceOf(network.layer(currentIdx), ResponseLayer.class);
         Assert.isTrue(expectedOutput.length == current.nodeCount(), "Incorrect excepted output count");
-        Assert.isTrue(current.input() != null, "Call output() first, there is no calculated output signal for weighs correcting");
         float[] updatedDelta = getLayerDelta(currentIdx)
                 .updateLastLayerDelta(current.input(), current.output(), expectedOutput, current.activationFunc());
         Layer previous = network.layer(currentIdx - 1);
@@ -112,6 +113,7 @@ class BackpropagationTrainStrategy implements TrainStrategy {
             for (int j = 0, cnt = input.length; j < cnt; j++) {  // current layer
                 float error = output[j] - expectedOutput[j];
                 if (Objects.equals(func, ActivationFunc.softmax())) {
+                    isSumEqualsToOne(expectedOutput);
                     delta[j] = error;  // Gross-entropy loss delta
                 } else {
                     float nodeInputSum = input[j];
@@ -120,6 +122,15 @@ class BackpropagationTrainStrategy implements TrainStrategy {
                 }
             }
             return delta;
+        }
+
+        private static void isSumEqualsToOne(float[] expectedOutput) {
+            float total = 0;
+            for (float v : expectedOutput) {
+                total += v;
+            }
+            Assert.isTrue(0.99f < total && total < 1.01f,
+                    "For 'softmax' activation function in output layer sum of expected output should equals to 1.00");
         }
 
         /**

@@ -44,8 +44,17 @@ class ResponseLayerImpl implements ResponseLayer {
 
     @Override
     public float[] output() {
-        this.inputSum = Matrix.multiply(weight, previous.output());
-        return output = Matrix.applyFunc(inputSum, func.function());
+        return output;
+    }
+
+    @Override
+    public void propagate() {
+        updateInput();
+        output = Matrix.applyFunc(inputSum, func.function());
+    }
+
+    void updateInput() {
+        inputSum = Matrix.multiply(weight, previous.output());
     }
 
     @Override

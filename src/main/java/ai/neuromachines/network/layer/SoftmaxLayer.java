@@ -9,7 +9,7 @@ import static ai.neuromachines.network.function.ActivationFunc.softmax;
  * Implements layer with {@link SoftmaxFunc} activation function
  */
 class SoftmaxLayer implements ResponseLayer {
-    private final ResponseLayer wrapper;
+    private final ResponseLayerImpl wrapper;
 
     SoftmaxLayer(float[][] weights, Layer previous) {
         this.wrapper = new ResponseLayerImpl(weights, previous, softmax());
@@ -37,6 +37,12 @@ class SoftmaxLayer implements ResponseLayer {
 
     @Override
     public float[] output() {
+        return wrapper.output();
+    }
+
+    @Override
+    public void propagate() {
+        wrapper.updateInput();
         float[] input = input();
         float[] numerator = new float[input.length];
         float denumerator = 0;
@@ -44,11 +50,10 @@ class SoftmaxLayer implements ResponseLayer {
             numerator[i] = (float) Math.exp(input[i]);
             denumerator += numerator[i];
         }
-        float[] output = wrapper.output();
+        float[] output = output();
         assert input.length == output.length : "Incorrect wrapper layer";
         for (int i = 0; i < output.length; i++) {
             output[i] = numerator[i] / denumerator;
         }
-        return output;
     }
 }

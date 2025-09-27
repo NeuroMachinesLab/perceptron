@@ -109,4 +109,9 @@ public interface Network {
      * @throws IllegalArgumentException if {@code layerIndex < 0} or {@code layerIndex >= (layers count - 1)}
      */
     float[][] weights(int layerIndex);
+
+    /**
+     * Propagates input signals from sensor to output layer
+     */
+    void propagate();
 }

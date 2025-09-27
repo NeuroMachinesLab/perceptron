@@ -48,11 +48,17 @@ public interface ResponseLayer extends Layer {
         return a;
     }
 
-    ActivationFunc activationFunc();
+    /**
+     * Receives new input signals from previous layer and
+     * updates output signals from this input signals and activation function
+     */
+    void propagate();
 
     /**
      * Returns weights for connections between this layer and previous layer nodes
      * (row count equals to this layer node count, cols count equals to previous layer node count)
      */
     float[][] weights();
+
+    ActivationFunc activationFunc();
 }
