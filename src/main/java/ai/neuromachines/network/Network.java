@@ -24,17 +24,18 @@ public interface Network {
 
     /**
      * Creates network with {@code layersNodeCount.length} node layers.
-     * Each node activation function is set to {@code func} argument.
+     * All layers (except sensor layer) activation function are set to {@code func} argument.
      * Nodes edges weights are set to random values.
      */
-    static Network of(ActivationFunc func, int... layersNodeCount) {
+    static Network of(List<ActivationFunc> func, int... layersNodeCount) {
         Assert.isTrue(layersNodeCount.length > 1, "Minimum 2 layers expected");
+        Assert.isTrue(func.size() + 1 == layersNodeCount.length, "Incorrect activation function count");
         List<Layer> layers = new ArrayList<>();
         SensorLayer sensorLayer = SensorLayer.of(layersNodeCount[0]);
         layers.add(sensorLayer);
         for (int i = 1; i < layersNodeCount.length; i++) {
             int nodeCnt = layersNodeCount[i];
-            ResponseLayer layer = ResponseLayer.of(nodeCnt, layers.getLast(), func);
+            ResponseLayer layer = ResponseLayer.of(nodeCnt, layers.getLast(), func.get(i - 1));
             layers.add(layer);
         }
         return new NetworkImpl(layers);

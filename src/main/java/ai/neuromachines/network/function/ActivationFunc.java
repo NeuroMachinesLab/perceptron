@@ -17,8 +17,8 @@ public interface ActivationFunc {
         return IdentityFunc.of(alpha);
     }
 
-    static ActivationFunc preLu(float alpha) {
-        return PreLuFunc.of(alpha);
+    static ActivationFunc leakyReLu(float alpha) {
+        return LeakyReLuFunc.of(alpha);
     }
 
     static ActivationFunc reLu(float alpha) {
