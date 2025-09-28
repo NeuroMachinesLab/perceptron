@@ -29,6 +29,7 @@ public class ActivationFuncSerializer {
             case "relu" -> reLu(parseAlpha(string));
             case "sigmoid" -> sigmoid(parseAlpha(string));
             case "silu" -> siLu(parseAlpha(string));
+            case "softmax" -> softmax();
             case "softplus" -> softplus();
             case "tanh" -> tanh();
             default -> throw new IllegalArgumentException("Activation function is not implemented: " + string);

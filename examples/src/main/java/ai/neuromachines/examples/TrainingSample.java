@@ -49,7 +49,7 @@ public class TrainingSample {
                 createNetwork(input.length, 4, expectedOutput.length);
 
         TrainStrategy trainStrategy = TrainStrategy.backpropagation(network);
-        trainNetwork(network, input, expectedOutput, trainStrategy, 100);
+        trainNetwork(input, expectedOutput, trainStrategy, 100);
         printResult(input, expectedOutput, network);
 
         saveToFile(network, path);
@@ -76,21 +76,17 @@ public class TrainingSample {
         System.out.println("Network has been written to: " + path);
     }
 
-    private static void trainNetwork(Network network,
-                                     float[] input,
+    private static void trainNetwork(float[] input,
                                      float[] expectedOutput,
                                      TrainStrategy trainStrategy,
                                      @SuppressWarnings("SameParameterValue") int iterations) {
         Instant t0 = Instant.now();
-        network.input(input);  // set input signal
-        network.output();      // calculate first output result
         for (int i = 1; i < iterations; i++) {
+            trainStrategy.train(input, expectedOutput);
 //            System.out.print("Iteration #");
 //            System.out.println(i + 1);
-//            print("Network", network);
+//            print("Network", network);  // print weights
 //            print("Outputs", network.output());
-            trainStrategy.train(expectedOutput);
-            network.output();  // update output with new weights for same input signal (input is not changed)
         }
         Duration timeSpent = Duration.between(t0, Instant.now());
         System.out.println("Train iterations: " + iterations);

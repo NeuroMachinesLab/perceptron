@@ -76,4 +76,9 @@ class NetworkImpl implements Network {
                 .weights();
 
     }
+
+    @Override
+    public void propagate() {
+        responseLayers().forEach(ResponseLayer::propagate);
+    }
 }

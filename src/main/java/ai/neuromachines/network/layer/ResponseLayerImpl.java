@@ -21,8 +21,9 @@ class ResponseLayerImpl implements ResponseLayer {
         }
         this.previous = previous;
         this.weight = weights;
-        this.func = func;
         int nodeCnt = weights.length;
+        this.inputSum = new float[nodeCnt];
+        this.func = func;
         this.output = new float[nodeCnt];
     }
 
@@ -43,8 +44,17 @@ class ResponseLayerImpl implements ResponseLayer {
 
     @Override
     public float[] output() {
-        this.inputSum = Matrix.multiply(weight, previous.output());
-        return output = Matrix.applyFunc(inputSum, func.function());
+        return output;
+    }
+
+    @Override
+    public void propagate() {
+        updateInput();
+        output = Matrix.applyFunc(inputSum, func.function());
+    }
+
+    void updateInput() {
+        inputSum = Matrix.multiply(weight, previous.output());
     }
 
     @Override
