@@ -7,7 +7,7 @@
 
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
     <description>Pure Java Rumelhart's Multilayer Perceptron</description>
 
     <licenses>
