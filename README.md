@@ -16,7 +16,7 @@ This [activation function](https://en.wikipedia.org/wiki/Activation_function) ar
 - Identity
 - Sigmoid
 - ReLU
-- PReLU
+- Leaky ReLU
 - ELU
 - SiLU
 - Softmax
@@ -88,7 +88,7 @@ After that you can add package to dependencies
 <dependency>
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>${perceptron.version}</version>
+    <version>2.0</version>
 </dependency>
 ```
 
@@ -115,6 +115,6 @@ and add dependency
 <dependency>
     <groupId>com.github.NeuroMachinesLab</groupId>
     <artifactId>perceptron</artifactId>
-    <version>${perceptron.version}</version>
+    <version>2.0</version>
 </dependency>
 ```

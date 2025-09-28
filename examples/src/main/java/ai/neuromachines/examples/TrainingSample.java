@@ -13,15 +13,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.*;
 
 /**
  * First run creates Perceptron with 3 layers (sensor, hidden and output).
- * Network weights set to random values. Activation function set to Sigmoid.
+ * Network weights set to random values.
+ * For hidden layer activation function set to Leaky ReLu, for output layer - set to Softmax .
  * <p>
  * Network input layer consists of 3 nodes. Network input signal set to 0.1, 0.2, 0.3 for each of those nodes.
- * Network output layer consists of 2 nodes. Expected output values is 0.8 and 0.9.
+ * Network output layer consists of 2 nodes. Expected output values is 0.2 and 0.8.
  * Network is trained in 100 cycles by Backpropagation algorithm.
  * Corrected network weights is saved to "network.txt" file.
  * <p>
@@ -42,7 +44,7 @@ public class TrainingSample {
     public static void main(String[] args) throws IOException {
 
         float[] input = new float[]{0.1f, 0.2f, 0.3f};
-        float[] expectedOutput = new float[]{0.8f, 0.9f};
+        float[] expectedOutput = new float[]{0.2f, 0.8f};
 
         Network network = Files.exists(path) ?
                 openNetworkFromFile(path) :
@@ -56,9 +58,13 @@ public class TrainingSample {
     }
 
     private static Network createNetwork(int... layersNodeCount) {
-        System.out.println("Create network with random weights");
-        ActivationFunc func = ActivationFunc.sigmoid(1);
-        return Network.of(func, layersNodeCount);
+        System.out.println("Create network with random weights and " +
+                layersNodeCount[0] + " nodes in input layer, " +
+                layersNodeCount[1] + " nodes in hidden layer, " +
+                layersNodeCount[2] + " nodes in output layer");
+        ActivationFunc hiddenLayerActFunc = ActivationFunc.leakyReLu(0.01f);
+        ActivationFunc outputLayerActFunc = ActivationFunc.softmax();
+        return Network.of(List.of(hiddenLayerActFunc, outputLayerActFunc), layersNodeCount);
     }
 
     private static Network openNetworkFromFile(@SuppressWarnings("SameParameterValue") Path path) throws IOException {
@@ -81,7 +87,7 @@ public class TrainingSample {
                                      TrainStrategy trainStrategy,
                                      @SuppressWarnings("SameParameterValue") int iterations) {
         Instant t0 = Instant.now();
-        for (int i = 1; i < iterations; i++) {
+        for (int i = 0; i < iterations; i++) {
             trainStrategy.train(input, expectedOutput);
 //            System.out.print("Iteration #");
 //            System.out.println(i + 1);

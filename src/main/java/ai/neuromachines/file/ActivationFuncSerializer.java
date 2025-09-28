@@ -25,7 +25,7 @@ public class ActivationFuncSerializer {
         return switch (funcName.toLowerCase()) {
             case "elu" -> elu(parseAlpha(string));
             case "identity" -> identity(parseAlpha(string));
-            case "prelu" -> preLu(parseAlpha(string));
+            case "leakyrelu" -> leakyReLu(parseAlpha(string));
             case "relu" -> reLu(parseAlpha(string));
             case "sigmoid" -> sigmoid(parseAlpha(string));
             case "silu" -> siLu(parseAlpha(string));
