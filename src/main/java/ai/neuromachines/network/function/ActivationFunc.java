@@ -17,6 +17,13 @@ public interface ActivationFunc {
         return IdentityFunc.of(alpha);
     }
 
+    static ActivationFunc leakyReLu() {
+        return LeakyReLuFunc.of(0.01f);
+    }
+
+    /**
+     * @param alpha not learnable coefficient for X < 0; use 0.01 for well known Leaky ReLU
+     */
     static ActivationFunc leakyReLu(float alpha) {
         return LeakyReLuFunc.of(alpha);
     }
