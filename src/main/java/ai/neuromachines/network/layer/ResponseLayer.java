@@ -33,9 +33,7 @@ public interface ResponseLayer extends Layer {
      */
     static ResponseLayer of(int nodeCnt, Layer previous, ActivationFunc func) {
         float[][] weights = randomWeights(nodeCnt, previous.nodeCount());
-        return Objects.equals(func, ActivationFunc.softmax()) ?
-                new SoftmaxLayer(weights, previous) :
-                new ResponseLayerImpl(weights, previous, func);
+        return of(weights, previous, func);
     }
 
     private static float[][] randomWeights(int rows, int cols) {

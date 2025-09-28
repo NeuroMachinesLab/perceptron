@@ -6,6 +6,7 @@ import ai.neuromachines.network.function.ActivationFunc;
 import ai.neuromachines.network.function.SoftmaxFunc;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
+import ai.neuromachines.network.train.lossfunc.LossFunc;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ import java.util.Objects;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
- * Squared error loss function is used with one exception.
+ * Least Squares loss function is used with one exception.
  * <p>
- * If output layer's activation function is {@link SoftmaxFunc}, then cross-entropy loss function is used.
+ * If output layer's activation function is {@link SoftmaxFunc}, then Cross-entropy loss function is used.
  * Check out <a href="https://habr.com/ru/articles/155235">this article</a> for backpropagation method calculation
  * in this case.
  *
@@ -26,16 +27,21 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 class BackpropagationTrainStrategy implements TrainStrategy {
     private final Network network;
+    private final LossFunc lossFunc;
     // i-th elements corresponds to network's (i+1) layer deltas
     private final List<LayerDelta> layerDeltas;
 
 
     public static BackpropagationTrainStrategy of(Network network) {
+        ActivationFunc outptutActFunc = network.responseLayers().getLast().activationFunc();
+        LossFunc lossFunc = Objects.equals(outptutActFunc, ActivationFunc.softmax()) ?
+                LossFunc.crossEntropy() :
+                LossFunc.leastSquares();
         List<LayerDelta> layerDeltas = new ArrayList<>();
         for (ResponseLayer layer : network.responseLayers()) {
             layerDeltas.add(new LayerDelta(layer.nodeCount()));
         }
-        return new BackpropagationTrainStrategy(network, layerDeltas);
+        return new BackpropagationTrainStrategy(network, lossFunc, layerDeltas);
     }
 
     @Override
@@ -46,7 +52,7 @@ class BackpropagationTrainStrategy implements TrainStrategy {
         ResponseLayer current = Assert.isInstanceOf(network.layer(currentIdx), ResponseLayer.class);
         Assert.isTrue(expectedOutput.length == current.nodeCount(), "Incorrect excepted output count");
         float[] updatedDelta = getLayerDelta(currentIdx)
-                .updateLastLayerDelta(current.input(), current.output(), expectedOutput, current.activationFunc());
+                .updateLastLayerDelta(current.input(), current.output(), expectedOutput, current.activationFunc(), lossFunc);
         Layer previous = network.layer(currentIdx - 1);
         updateWeights(previous.output(), updatedDelta, current.weights());
         updatePreviousLayerWeights(currentIdx);
@@ -104,33 +110,19 @@ class BackpropagationTrainStrategy implements TrainStrategy {
          * @param input          j-th layer's node input signal
          * @param output         j-th layer's node output signal
          * @param expectedOutput j-th layer's node expected output signal
-         * @param func           j-th layer's node activation function
+         * @param actfunc        j-th layer's node activation function
+         * @param lossFunc       error calculation loss function
          * @return j-th layer's node updates deltas
          */
-        float[] updateLastLayerDelta(float[] input, float[] output, float[] expectedOutput, ActivationFunc func) {
+        float[] updateLastLayerDelta(float[] input, float[] output, float[] expectedOutput,
+                                     ActivationFunc actfunc, LossFunc lossFunc) {
             assert delta.length == input.length : "Incorrect delta count";
+            lossFunc.verifyExpectedOutput(expectedOutput);
 
             for (int j = 0, cnt = input.length; j < cnt; j++) {  // current layer
-                float error = output[j] - expectedOutput[j];
-                if (Objects.equals(func, ActivationFunc.softmax())) {
-                    isSumEqualsToOne(expectedOutput);
-                    delta[j] = error;  // Gross-entropy loss delta
-                } else {
-                    float nodeInputSum = input[j];
-                    float activationFuncDerivative = func.derivative().apply(nodeInputSum);
-                    delta[j] = error * activationFuncDerivative;  // Squared error loss delta
-                }
+                delta[j] = lossFunc.calculateDelta(input[j], output[j], expectedOutput[j], actfunc);
             }
             return delta;
-        }
-
-        private static void isSumEqualsToOne(float[] expectedOutput) {
-            float total = 0;
-            for (float v : expectedOutput) {
-                total += v;
-            }
-            Assert.isTrue(0.99f < total && total < 1.01f,
-                    "For 'softmax' activation function in output layer sum of expected output should equals to 1.00");
         }
 
         /**
