@@ -7,7 +7,9 @@ import ai.neuromachines.network.function.SoftmaxFunc;
 import ai.neuromachines.network.layer.Layer;
 import ai.neuromachines.network.layer.ResponseLayer;
 import ai.neuromachines.network.train.lossfunc.LossFunc;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,11 @@ class BackpropagationTrainStrategy implements TrainStrategy {
     private final LossFunc lossFunc;
     // i-th elements corresponds to network's (i+1) layer deltas
     private final List<LayerDelta> layerDeltas;
+    // @see <a href="https://en.wikipedia.org/wiki/Multilayer_perceptron">Multilayer Perceptron</a>
+    // @see <a href="https://en.wikipedia.org/wiki/Learning_rate">Learning Rate</a>
+    @Setter
+    @Getter
+    private float learningRate = 0.01f;
 
 
     public static BackpropagationTrainStrategy of(Network network) {
@@ -86,13 +93,13 @@ class BackpropagationTrainStrategy implements TrainStrategy {
      * @param weight              weights between (j-1) and j-th layers
      *                            (matrix rows count equals to j-th layer node count, cols count equals to (j-1) layer node count)
      */
-    private static void updateWeights(float[] previousLayerOutput, float[] delta, float[][] weight) {
+    private void updateWeights(float[] previousLayerOutput, float[] delta, float[][] weight) {
         assert delta.length == weight.length : "Incorrect delta count";
 
         for (int j = 0; j < weight.length; j++) {  // current layer
             assert weight[j].length == previousLayerOutput.length : "Incorrect previous layer node count";
             for (int i = 0; i < previousLayerOutput.length; i++) {  // previous layer
-                float weightDelta = -Constants.LEARNING_RATE * previousLayerOutput[i] * delta[j];
+                float weightDelta = -learningRate * previousLayerOutput[i] * delta[j];
                 weight[j][i] += weightDelta;
             }
         }
