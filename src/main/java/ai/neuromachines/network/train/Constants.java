@@ -8,7 +8,7 @@ public final class Constants {
     /**
      * Коэффициент, определяющий скорость изменения весов
      */
-    static float LEARNING_RATE = 0.1f;
+    static float LEARNING_RATE = 0.01f;
 
     public static void learningRate(float value) {
         LEARNING_RATE = value;
