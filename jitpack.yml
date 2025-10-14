@@ -1,0 +1,4 @@
+# Remove if Jitpack supports Java 25 out of box
+before_install:
+  - sdk install java 25-open
+  - sdk use java 25-open

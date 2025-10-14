@@ -2,7 +2,7 @@
 
 ![multilayer perceptron](https://github.com/user-attachments/assets/1872114f-4727-43fe-a0ca-9c661a66c071)
 
-No more fat JAR required for starting from scratch. JAR's total size is about 40 kB!
+No more fat JAR required for starting from scratch. JAR's total size is about 50 kB!
 
 Implements pure java [Multilayer Perceptron](https://en.wikipedia.org/wiki/Multilayer_perceptron)
 with one of the [Activation Functions](https://en.wikipedia.org/wiki/Activation_function)
