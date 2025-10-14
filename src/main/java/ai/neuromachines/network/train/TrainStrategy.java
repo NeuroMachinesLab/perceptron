@@ -14,4 +14,8 @@ public interface TrainStrategy {
      * @see <a href="https://en.wikipedia.org/wiki/Backpropagation">Backpropagation</a>
      */
     void train(float[] input, float[] expectedOutput);
+
+    void setLearningRate(float learningRate);
+
+    float getLearningRate();
 }
