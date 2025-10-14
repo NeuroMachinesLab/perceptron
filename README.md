@@ -117,7 +117,7 @@ After that you can add package to dependencies
 <dependency>
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
 
@@ -144,7 +144,7 @@ and add dependency
 <dependency>
     <groupId>com.github.NeuroMachinesLab</groupId>
     <artifactId>perceptron</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
 Please note that the groupId is different from the package on GitHub Packages.
