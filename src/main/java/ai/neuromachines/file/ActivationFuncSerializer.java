@@ -25,7 +25,7 @@ public class ActivationFuncSerializer {
         return switch (funcName.toLowerCase()) {
             case "elu" -> elu(parseAlpha(string));
             case "identity" -> identity(parseAlpha(string));
-            case "leakyrelu" -> leakyReLu(parseAlpha(string));
+            case "leakyrelu" -> leakyReLu(parseAlpha(string), parseBeta(string));
             case "relu" -> reLu(parseAlpha(string));
             case "sigmoid" -> sigmoid(parseAlpha(string));
             case "silu" -> siLu(parseAlpha(string));
@@ -37,8 +37,16 @@ public class ActivationFuncSerializer {
     }
 
     private static float parseAlpha(String string) {
-        String arg = string.split("[(,)]")[1];
-        String alpha = arg.split("=")[1];
-        return Float.parseFloat(alpha);
+        return parseArg(string, 1);
+    }
+
+    private static float parseBeta(String string) {
+        return parseArg(string, 2);
+    }
+
+    private static float parseArg(String string, int argNum) {
+        String arg = string.split("[(,)]")[argNum];
+        String beta = arg.split("=")[1];
+        return Float.parseFloat(beta);
     }
 }
