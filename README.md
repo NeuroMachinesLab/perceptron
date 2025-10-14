@@ -12,15 +12,26 @@ and [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation) training al
 
 ## Activation Functions
 
-This [activation function](https://en.wikipedia.org/wiki/Activation_function) are implemented currently:
-- Identity
-- Sigmoid
-- ReLU
-- Leaky ReLU
+This activation functions ([[1]](https://en.wikipedia.org/wiki/Activation_function) and
+[[2]](https://ru.wikipedia.org/wiki/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F_%D0%B0%D0%BA%D1%82%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D0%B8))
+are implemented currently:
+- ArcTan
+- Bent Identity
 - ELU
+- Gaussian
+- Heaviside
+- Identity
+- ISRLU
+- ISRU
+- Leaky ReLU
+- ReLU
+- Sigmoid
 - SiLU
+- Sinc
+- Sin
 - Softmax
 - Softplus
+- Softsign
 - Tanh
 
 ## Backpropagation Algorithm
@@ -73,7 +84,9 @@ For hidden layer node Delta coefficient evaluated by:
 ```
 where: <br>
 `w_jk` - weight between j-th node (located closer to input layer) and k-th node (located closer to output layer); <br>
-`δ_k` - delta coefficient for k-th node (located closer to output layer).
+`δ_k` - delta coefficient for k-th node (located closer to output layer);
+        the coefficient `δ_k` has already been calculated earlier by according to formula (3) or (4)
+        if k-th node in output layer, and by formula (5) in previous iteration if k-th node in other layers.  
 
 ## How to Use Jar Library
 
@@ -81,18 +94,34 @@ There are 2 cases for get JAR package (~40 Kb).
 
 1. Get JAR from GitHub [Packages](https://github.com/orgs/NeuroMachinesLab/packages?repo_name=perceptron).
 In this case you [should](https://stackoverflow.com/questions/72732582/using-github-packages-without-personal-access-token)
-use GitHub Personal Access Token (PAT). Configure maven repository by this GitHub
+use GitHub Personal Access Token (PAT). First, add repository to you maven project
+```xml
+<repositories>
+  <repository>
+    <id>central</id>
+    <url>https://repo.maven.apache.org/maven2</url>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+  <repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/NeuroMachinesLab/perceptron</url>
+  </repository>
+</repositories>
+```
+Secondly, configure GitHub Personal Access Token (PAT) by this
 [Tutorial](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
 After that you can add package to dependencies
 ```xml
 <dependency>
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
 
-2. You can get JAR package from [JitPack](https://jitpack.io/#NeuroMachinesLab/perceptron) repository without PAT.
+2. Or you can get JAR package from [JitPack](https://jitpack.io/#NeuroMachinesLab/perceptron) repository without PAT.
 Add repository to you maven project
 ```xml
 <repositories>
@@ -115,6 +144,8 @@ and add dependency
 <dependency>
     <groupId>com.github.NeuroMachinesLab</groupId>
     <artifactId>perceptron</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
+Please note that the groupId is different from the package on GitHub Packages.
+This is expected, this is how JitPack works.

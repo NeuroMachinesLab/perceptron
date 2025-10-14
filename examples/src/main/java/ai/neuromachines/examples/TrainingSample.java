@@ -62,7 +62,7 @@ public class TrainingSample {
                 layersNodeCount[0] + " nodes in input layer, " +
                 layersNodeCount[1] + " nodes in hidden layer, " +
                 layersNodeCount[2] + " nodes in output layer");
-        ActivationFunc hiddenLayerActFunc = ActivationFunc.leakyReLu(0.01f);
+        ActivationFunc hiddenLayerActFunc = ActivationFunc.leakyReLu();
         ActivationFunc outputLayerActFunc = ActivationFunc.softmax();
         return Network.of(List.of(hiddenLayerActFunc, outputLayerActFunc), layersNodeCount);
     }
