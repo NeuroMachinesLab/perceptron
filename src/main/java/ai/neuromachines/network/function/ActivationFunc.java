@@ -9,6 +9,14 @@ public interface ActivationFunc {
     Function<Float, Float> derivative();
 
 
+    static ActivationFunc arctan() {
+        return ArctanFunc.of();
+    }
+
+    static ActivationFunc bentIdentity() {
+        return BentIdentityFunc.of();
+    }
+
     /**
      * @param alpha parameter for X < 0
      */
@@ -17,10 +25,38 @@ public interface ActivationFunc {
     }
 
     /**
-     * @param alpha use 1 for well known Identity
+     * @param alpha parameter for X >= 0; use 1 for well known Heaviside Step function
+     */
+    static ActivationFunc heaviside(float alpha) {
+        return HeavisideFunc.of(alpha);
+    }
+
+    /**
+     * @param alpha parameter for X; use 1 for well known Gaussian function
+     */
+    static ActivationFunc gaussian(float alpha) {
+        return GaussianFunc.of(alpha);
+    }
+
+    /**
+     * @param alpha parameter for X; use 1 for well known Identity
      */
     static ActivationFunc identity(float alpha) {
         return IdentityFunc.of(alpha);
+    }
+
+    /**
+     * @param alpha parameter for X in denominator, when X <= 0
+     */
+    static ActivationFunc isrlu(float alpha) {
+        return IsrluFunc.of(alpha);
+    }
+
+    /**
+     * @param alpha parameter for X in denominator
+     */
+    static ActivationFunc isru(float alpha) {
+        return IsruFunc.of(alpha);
     }
 
     static ActivationFunc leakyReLu() {
@@ -56,12 +92,33 @@ public interface ActivationFunc {
         return SiLuFunc.of(alpha);
     }
 
+    /**
+     * @param alpha parameter for X
+     */
+    static ActivationFunc sinc(float alpha) {
+        return SincFunc.of(alpha);
+    }
+
+    /**
+     * @param alpha parameter for X
+     */
+    static ActivationFunc sin(float alpha) {
+        return SinFunc.of(alpha);
+    }
+
     static ActivationFunc softmax() {
         return SoftmaxFunc.of();
     }
 
     static ActivationFunc softplus() {
         return SoftplusFunc.of();
+    }
+
+    /**
+     * @param alpha parameter for X
+     */
+    static ActivationFunc softsign(float alpha) {
+        return SoftsignFunc.of(alpha);
     }
 
     static ActivationFunc tanh() {

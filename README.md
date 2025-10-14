@@ -12,15 +12,26 @@ and [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation) training al
 
 ## Activation Functions
 
-This [activation function](https://en.wikipedia.org/wiki/Activation_function) are implemented currently:
-- Identity
-- Sigmoid
-- ReLU
-- Leaky ReLU
+This activation functions ([[1]](https://en.wikipedia.org/wiki/Activation_function) and
+[[2]](https://ru.wikipedia.org/wiki/%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F_%D0%B0%D0%BA%D1%82%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D0%B8))
+are implemented currently:
+- ArcTan
+- Bent Identity
 - ELU
+- Gaussian
+- Heaviside
+- Identity
+- ISRLU
+- ISRU
+- Leaky ReLU
+- ReLU
+- Sigmoid
 - SiLU
+- Sinc
+- Sin
 - Softmax
 - Softplus
+- Softsign
 - Tanh
 
 ## Backpropagation Algorithm
