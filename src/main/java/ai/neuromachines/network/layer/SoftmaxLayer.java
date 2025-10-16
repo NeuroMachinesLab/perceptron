@@ -2,12 +2,15 @@ package ai.neuromachines.network.layer;
 
 import ai.neuromachines.network.function.ActivationFunc;
 import ai.neuromachines.network.function.SoftmaxFunc;
+import lombok.RequiredArgsConstructor;
 
 import static ai.neuromachines.network.function.ActivationFunc.softmax;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Implements layer with {@link SoftmaxFunc} activation function
  */
+@RequiredArgsConstructor(access = PRIVATE)
 class SoftmaxLayer implements ResponseLayer {
     private final ResponseLayerImpl wrapper;
 
@@ -17,7 +20,8 @@ class SoftmaxLayer implements ResponseLayer {
 
     @Override
     public Layer copyOf(Layer previous) {
-        return new ResponseLayerImpl(weights().clone(), previous, softmax());
+        ResponseLayerImpl wrapper = new ResponseLayerImpl(weights().clone(), previous, softmax());
+        return new SoftmaxLayer(wrapper);
     }
 
     @Override
