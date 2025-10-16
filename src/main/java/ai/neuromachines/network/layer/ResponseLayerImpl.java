@@ -28,6 +28,11 @@ class ResponseLayerImpl implements ResponseLayer {
     }
 
     @Override
+    public ResponseLayerImpl copyOf(Layer previous) {
+        return new ResponseLayerImpl(weights().clone(), previous, activationFunc());
+    }
+
+    @Override
     public ActivationFunc activationFunc() {
         return func;
     }

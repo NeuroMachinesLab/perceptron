@@ -11,8 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SequencedCollection;
 
+import static java.util.Objects.nonNull;
+
 public interface Network {
 
+
+    /**
+     * Creates network copy.
+     * Weights and activation functions are copied. Input and output signals are not.
+     */
+    static Network of(Network network) {
+        SequencedCollection<Layer> copyLayers = new ArrayList<>();
+        Layer previous = null;
+        for (Layer l : network.layers()) {
+            Assert.isTrue(nonNull(previous) || (l instanceof SensorLayer), "null previous layer is not permitted");
+            Layer copy = l.copyOf(previous);
+            copyLayers.add(copy);
+            previous = copy;
+        }
+        return of(copyLayers);
+    }
 
     /**
      * Creates network with specified node layers.

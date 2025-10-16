@@ -16,6 +16,11 @@ class SoftmaxLayer implements ResponseLayer {
     }
 
     @Override
+    public Layer copyOf(Layer previous) {
+        return new ResponseLayerImpl(weights().clone(), previous, softmax());
+    }
+
+    @Override
     public ActivationFunc activationFunc() {
         return wrapper.activationFunc();
     }

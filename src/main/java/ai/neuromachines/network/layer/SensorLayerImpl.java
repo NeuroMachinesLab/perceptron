@@ -13,6 +13,14 @@ class SensorLayerImpl implements Layer, SensorLayer {
         return new SensorLayerImpl(new float[nodeCnt]);
     }
 
+    /**
+     * @implNote Previous argument is ignored, may be called with null
+     */
+    @Override
+    public SensorLayerImpl copyOf(Layer previous) {
+        return new SensorLayerImpl(new float[nodeCount()]);
+    }
+
     @Override
     public void setInput(float[] signal) {
         Assert.isTrue(signal.length == this.signal.length, "Incorrect array length");
