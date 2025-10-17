@@ -5,6 +5,7 @@ import ai.neuromachines.network.function.SoftmaxFunc;
 import lombok.RequiredArgsConstructor;
 
 import static ai.neuromachines.network.function.ActivationFunc.softmax;
+import static ai.neuromachines.network.layer.LayerHelper.copy;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
@@ -20,7 +21,7 @@ class SoftmaxLayer implements ResponseLayer {
 
     @Override
     public Layer copyOf(Layer previous) {
-        ResponseLayerImpl wrapper = new ResponseLayerImpl(weights().clone(), previous, softmax());
+        ResponseLayerImpl wrapper = new ResponseLayerImpl(copy(weights()), previous, softmax());
         return new SoftmaxLayer(wrapper);
     }
 
