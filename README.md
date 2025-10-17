@@ -88,9 +88,9 @@ where: <br>
         the coefficient `δ_k` has already been calculated earlier by according to formula (3) or (4)
         if k-th node in output layer, and by formula (5) in previous iteration if k-th node in other layers.  
 
-## How to Use Jar Library
+## How to Use The Jar Library
 
-There are 2 cases for get JAR package (~40 Kb).
+There are 2 cases for get JAR package (~50 Kb).
 
 1. Get JAR from GitHub [Packages](https://github.com/orgs/NeuroMachinesLab/packages?repo_name=perceptron).
 In this case you [should](https://stackoverflow.com/questions/72732582/using-github-packages-without-personal-access-token)
@@ -117,7 +117,7 @@ After that you can add package to dependencies
 <dependency>
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 </dependency>
 ```
 
@@ -144,7 +144,7 @@ and add dependency
 <dependency>
     <groupId>com.github.NeuroMachinesLab</groupId>
     <artifactId>perceptron</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 </dependency>
 ```
 Please note that the groupId is different from the package on GitHub Packages.
