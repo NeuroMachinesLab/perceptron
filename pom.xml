@@ -7,7 +7,7 @@
 
     <groupId>ai.neuromachines</groupId>
     <artifactId>perceptron</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
     <description>Pure Java Rumelhart's Multilayer Perceptron</description>
 
     <licenses>
@@ -66,6 +66,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>

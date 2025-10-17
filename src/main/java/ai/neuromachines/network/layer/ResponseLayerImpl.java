@@ -4,6 +4,8 @@ import ai.neuromachines.Assert;
 import ai.neuromachines.math.Matrix;
 import ai.neuromachines.network.function.ActivationFunc;
 
+import static ai.neuromachines.network.layer.LayerHelper.copy;
+
 class ResponseLayerImpl implements ResponseLayer {
     private final Layer previous;
     // 1-st row contains all weights for 1-st node of current layer to the previous layer
@@ -25,6 +27,11 @@ class ResponseLayerImpl implements ResponseLayer {
         this.inputSum = new float[nodeCnt];
         this.func = func;
         this.output = new float[nodeCnt];
+    }
+
+    @Override
+    public ResponseLayerImpl copyOf(Layer previous) {
+        return new ResponseLayerImpl(copy(weights()), previous, activationFunc());
     }
 
     @Override
